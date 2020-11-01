@@ -1,8 +1,11 @@
 import json
+import os
+import shutil
 from pathlib import Path
 from notion.client import NotionClient
 from notion.block import TodoBlock, PageBlock, TextBlock, VideoBlock
 import random as r
+from os import listdir, mkdir
 
 from loguru import logger
 
@@ -90,13 +93,6 @@ def fill_abstract(stop_count, link):
 
 
 logger.info('Скрипт завершил работу')
-
-set_logger()
-
-
-with open(Path('Google Keep', '03.10.17.json'), 'r', encoding='UTF-8') as note_file:
-    note_dict = json.load(note_file)
-    print(note_dict['listContent'][0]['text'])
 
 client = NotionClient(
     token_v2="e9301426f5180b643e1189d5ca2321f6f743effbebe9eea54321f48aa8740a37e8d578e391f0d370f398c2f8e4b3722a6a15e933b24b280769ab81a33be1ba696856981fc422751800353343d983")
