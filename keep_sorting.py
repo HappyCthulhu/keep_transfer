@@ -51,7 +51,6 @@ def hashtag_folder_sort(hashtag_name):
 
         if '.json' in file_name:
             with open(Path('Google Keep', hashtag_name, file_name), 'r', encoding='UTF-8') as note_file:
-                logger.debug(note_file)
                 note_dict = json.load(note_file)
             notes_value_list = check_is_pinned(note_dict, notes_value_list)
 
@@ -60,7 +59,6 @@ def hashtag_folder_sort(hashtag_name):
                     pictures_collect(note_dict['attachments'])
                 except FileNotFoundError:
                     logger.critical('В папке нет указанных прикрепленных материалов')
-
 
     return notes_value_list
 
@@ -115,39 +113,33 @@ def notion_upload(list_of_notes, collection_link):
         new_page_link = new_page.get_browseable_url()
         page_to_fill = client.get_block(new_page_link)
 
-        logger.debug(note)
-
         if 'attachments' in note:
+            logger.info(f'Заметка с фоткой: {note}')
             for picture in note['attachments']:
                 picture_name = picture['filePath']
-                picture_load = open(Path(MAIN_FOLDER, HASHTAG, picture_name))
                 image = page_to_fill.children.add_new(ImageBlock, width=800)
-                image.upload_file(picture_load)
+                image.upload_file(Path(MAIN_FOLDER, HASHTAG, picture_name))
 
-            if 'listContent' in note:
-                logger.debug('To-do')
-                for text in note['listContent']:
-                    to_do_element = page_to_fill.children.add_new(TodoBlock, title=text['text'])
-                    if text['isChecked']:
-                        to_do_element.checked = True
-                    else:
-                        to_do_element.checked = False
+        if 'listContent' in note:
+            logger.debug('To-do')
+            for text in note['listContent']:
+                to_do_element = page_to_fill.children.add_new(TodoBlock, title=text['text'])
+                if text['isChecked']:
+                    to_do_element.checked = True
+                else:
+                    to_do_element.checked = False
 
-            elif 'textContent' in note:
-                logger.debug('Обычный текст')
-                pass
-                page_to_fill.children.add_new(TextBlock, title=note['textContent'])
-            else:
-                logger.critical('Формат записки не определен')
-
-            if note['isArchived']:
-                page_to_fill.remove()
-
-            logger.info(f'Создано заметок: {count_of_notes}/{len(list_of_notes)}')
-
+        elif 'textContent' in note:
+            logger.debug('Обычный текст')
+            pass
+            page_to_fill.children.add_new(TextBlock, title=note['textContent'])
         else:
-            continue
+            logger.critical('Формат записки не определен')
 
+        if note['isArchived']:
+            page_to_fill.remove()
+
+        logger.info(f'Создано заметок: {count_of_notes}/{len(list_of_notes)}')
 
 
 HASHTAG = 'Дела'
