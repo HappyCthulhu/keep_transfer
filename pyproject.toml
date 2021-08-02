@@ -8,6 +8,9 @@ authors = ["HappyCthulhu <valeriyg98@gmail.com>"]
 python = "^3.8"
 loguru = "^0.5.3"
 notion = "^0.0.28"
+poetry-dotenv-plugin = "^0.1.0-alpha.2"
+Flask = "^2.0.1"
+notifiers = "^1.2.1"
 
 [tool.poetry.dev-dependencies]
 
